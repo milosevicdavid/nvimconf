@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/home/david/.vim/colors'
+let g:netrw_dirhist_3='/home/david/.vim'
+let g:netrw_dirhist_2='/home/david'
+let g:netrw_dirhist_1='/home/david/Javascript_učionica/BookStore'
