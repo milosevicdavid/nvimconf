@@ -4,12 +4,9 @@ Plug 'tpope/vim-sensible' " sets some normal standards
 Plug 'vim-airline/vim-airline' " status bar
 Plug 'vim-airline/vim-airline-themes' "status bar theme
 Plug 'sheerun/vim-polyglot' " language packs
-Plug 'joshdick/onedark.vim' " color theme
 Plug 'scrooloose/syntastic'
 Plug 'mtscout6/syntastic-local-eslint.vim'
-Plug 'ctrlpvim/ctrlp.vim' " file finder
 Plug 'jiangmiao/auto-pairs'
-Plug 'lervag/vimtex' " tex support
 Plug 'scrooloose/nerdtree'
 Plug 'townk/vim-autoclose'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -17,18 +14,32 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/vim-easy-align'
 Plug 'mlaursen/vim-react-snippets'
 Plug 'junegunn/goyo.vim'
-Plug 'vimwiki/vimwiki'
-Plug 'arcticicestudio/nord-vim'
 Plug 'matze/vim-move'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'sainnhe/sonokai'
-Plug 'tomasiser/vim-code-dark'
-Plug 'mhartington/oceanic-next'
-Plug 'morhetz/gruvbox'
-Plug 'franbach/miramare'
-Plug 'wadackel/vim-dogrun'
-Plug 'whatyouhide/vim-gotham'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+Plug 'tpope/vim-fugitive'
+Plug 'dkprice/vim-easygrep'
+Plug 'sainnhe/forest-night'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-rooter'
+Plug 'justinmk/vim-sneak'
+Plug 'othree/html5.vim'
+Plug 'unblevable/quick-scope'
+Plug 'jacoborus/tender.vim'
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'srcery-colors/srcery-vim'
 call plug#end()
+
+set encoding=UTF-8
+set cursorline
+set cursorcolumn
+
+"copy
+vnoremap <C-c> "+y
+
+"html5
+let html_no_rendering=1
 
 "theme settings
 set background=dark 
@@ -43,17 +54,29 @@ let g:sonokai_enable_italic = 1
 let g:sonokai_disable_italic_comment = 1
 let g:lightline = { 'colorscheme': 'dogrun' }
 
-set t_Co=256
-set t_ut=
-colorscheme dogrun
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+" For Neovim 0.1.3 and 0.1.4
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+" Theme
+syntax enable
+
+colorscheme tender
+
+"Vue
+let g:vim_vue_plugin_load_full_syntax = 1
+
 
 "Natural split
 set splitbelow
 set splitright
 
-map <F5> :bprevious<CR>
-map <F6> :bnext<CR>
-map <F7> :bd<CR>
+nmap <F5> :bprevious<CR>
+nmap <F6> :bnext<CR>
+nmap <F7> :bd<CR>
 
 " Change 2 split windows from vert to horiz or horiz to vert
 map <Leader>th <C-w>t<C-w>H
@@ -95,24 +118,19 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" remove trailing whitespace in python files on save
-autocmd BufWritePre *.py :%s/\s\+$//e
+
 
 " autoclose the preview window
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 
 
-" set python directories
-let g:python_host_prog = '/usr/bin/python2.7'
-let g:python3_host_prog = '/usr/bin/python3'
 
 " persistent undo
 set undodir=~/.config/nvim/undodir
 set undofile
 
-" disable latex-box included with vim-polyglot (conflicts with vimtex)
-let g:polyglot_disabled = ['latex']
+
 
 " set tab as 4 spaces
 set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
@@ -220,11 +238,7 @@ xmap af <Plug>(coc-funcobj-a)
 omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
 
-" Use <TAB> for selections ranges.
-" NOTE: Requires 'textDocument/selectionRange' support from the language server.
-" coc-tsserver, coc-python are the examples of servers that support it.
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
+
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
@@ -284,6 +298,8 @@ highlight link SyntasticStyleWarningSign SignColumn
 let g:user_emmet_leader_key=','
 
 "NERDTree
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
 nnoremap <silent> <expr> <C-\> g:NERDTree.IsOpen() ? "\:NERDTreeClose<CR>" : bufexists(expand('%')) ? "\:NERDTreeFind<CR>" : "\:NERDTree<CR>"
 "VimWiki
 set nocompatible
@@ -291,4 +307,107 @@ filetype plugin on
 syntax on
 "let mapleader="|"
 
+"fzf 
 
+" This is the default extra key bindings
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" Enable per-command history.
+" CTRL-N and CTRL-P will be automatically bound to next-history and
+" previous-history instead of down and up. If you don't like the change,
+" explicitly bind the keys to down and up in your $FZF_DEFAULT_OPTS.
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+map <C-f> :Files<CR>
+map <leader>b :Buffers<CR>
+nnoremap <leader>g :Rg<CR>
+nnoremap <leader>t :Tags<CR>
+nnoremap <leader>m :Marks<CR>
+
+
+let g:fzf_tags_command = 'ctags -R'
+" Border color
+let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
+
+let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
+let $FZF_DEFAULT_COMMAND="rg --files --hidden"
+
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+"Get Files
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+
+
+" Get text in files with Rg
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
+
+" Ripgrep advanced
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
+" Git grep
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+
+
+
+
+"Sneak
+
+let g:sneak#label = 1
+
+" case insensitive sneak
+let g:sneak#use_ic_scs = 1
+
+" immediately move to the next instance of search, if you move the cursor sneak is back to default behavior
+let g:sneak#s_next = 1
+
+" remap so I can use , and ; with f and t
+map gS <Plug>Sneak_,
+map gs <Plug>Sneak_;
+
+" Change the colors
+highlight Sneak guifg=black guibg=#00C7DF ctermfg=black ctermbg=cyan
+highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
+
+" Cool prompts
+" let g:sneak#prompt = '🕵'
+" let g:sneak#prompt = '🔎'
+
+" I like quickscope better for this since it keeps me in the scope of a single line
+" map f <Plug>Sneak_f
+" map F <Plug>Sneak_F
+" map t <Plug>Sneak_t
+" map T <Plug>Sneak_T
