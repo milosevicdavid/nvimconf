@@ -3,11 +3,16 @@ Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-sensible' " sets some normal standards
 Plug 'vim-airline/vim-airline' " status bar
 Plug 'vim-airline/vim-airline-themes' "status bar theme
-Plug 'sheerun/vim-polyglot' " language packs
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/syntastic'
 Plug 'mtscout6/syntastic-local-eslint.vim'
 Plug 'jiangmiao/auto-pairs'
-Plug 'scrooloose/nerdtree'
+" Plug 'storyn26383/vim-vue'
+Plug 'scrooloose/nerdtree'|
+            \ Plug 'Xuyuanp/nerdtree-git-plugin' |
+            \ Plug 'ryanoasis/vim-devicons'
 Plug 'townk/vim-autoclose'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
@@ -24,16 +29,36 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'justinmk/vim-sneak'
+Plug  'hail2u/vim-css3-syntax'
 Plug 'othree/html5.vim'
 Plug 'unblevable/quick-scope'
 Plug 'jacoborus/tender.vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'srcery-colors/srcery-vim'
+Plug 'romainl/Apprentice'
+Plug 'makerj/vim-pdf'
+Plug 'flrnd/plastic.vim'
+Plug 'Yggdroot/indentLine'
+Plug 'larsbs/vimterial_dark'
+Plug 'tomtom/tcomment_vim'
+Plug 'gilgigilgil/anderson.vim'
+Plug 'reedes/vim-colors-pencil'
+Plug 'sainnhe/edge'
+Plug 'freeo/vim-kalisi'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'crusoexia/vim-monokai'
+Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+Plug 'ajmwagar/vim-deus'
+
 call plug#end()
 
 set encoding=UTF-8
 set cursorline
-set cursorcolumn
+
+"Refresh buffers
+set autoread
+autocmd FocusGained * checktime
 
 "copy
 vnoremap <C-c> "+y
@@ -46,13 +71,11 @@ set background=dark
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 
-let g:two_firewatch_italics=1
-let g:miramare_enable_italic = 1
-let g:miramare_disable_italic_comment = 1
-let g:sonokai_style = 'atlantis'
-let g:sonokai_enable_italic = 1
-let g:sonokai_disable_italic_comment = 1
-let g:lightline = { 'colorscheme': 'dogrun' }
+"vetur
+let g:LanguageClient_serverCommands = {
+    \ 'vue': ['vls']
+    \ }
+
 
 if (has("termguicolors"))
  set termguicolors
@@ -65,6 +88,15 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 syntax enable
 
 colorscheme tender
+set background=dark
+let g:airline_theme = 'spaceduck'
+
+"SpaceDuck theme conf
+if exists('+termguicolors')
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+      set termguicolors
+    endif
 
 "Vue
 let g:vim_vue_plugin_load_full_syntax = 1
@@ -74,17 +106,17 @@ let g:vim_vue_plugin_load_full_syntax = 1
 set splitbelow
 set splitright
 
-nmap <F5> :bprevious<CR>
-nmap <F6> :bnext<CR>
-nmap <F7> :bd<CR>
+nmap <C-b> :bprevious<CR>
+nmap <C-m> :bnext<CR>
+nmap <Delete> :bd<CR>
 
 " Change 2 split windows from vert to horiz or horiz to vert
 map <Leader>th <C-w>t<C-w>H
 map <Leader>tk <C-w>t<C-w>K
 
 " Make adjusing split sizes a bit more friendly
-noremap <silent> <C-Left> :vertical resize +3<CR>
-noremap <silent> <C-Right> :vertical resize -3<CR>
+noremap <silent> <C-Right> :vertical resize +3<CR>
+noremap <silent> <C-Left> :vertical resize -3<CR>
 noremap <silent> <C-Up> :resize +3<CR>
 noremap <silent> <C-Down> :resize -3<CR>
 
@@ -271,6 +303,38 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>t
+
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
 " syntactic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -298,6 +362,7 @@ highlight link SyntasticStyleWarningSign SignColumn
 let g:user_emmet_leader_key=','
 
 "NERDTree
+let NERDTreeShowHidden=1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 nnoremap <silent> <expr> <C-\> g:NERDTree.IsOpen() ? "\:NERDTreeClose<CR>" : bufexists(expand('%')) ? "\:NERDTreeFind<CR>" : "\:NERDTree<CR>"
@@ -314,6 +379,7 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
+
 
 " Enable per-command history.
 " CTRL-N and CTRL-P will be automatically bound to next-history and
@@ -404,7 +470,7 @@ highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
 
 " Cool prompts
 " let g:sneak#prompt = '🕵'
-" let g:sneak#prompt = '🔎'
+ let g:sneak#prompt = '🔎'
 
 " I like quickscope better for this since it keeps me in the scope of a single line
 " map f <Plug>Sneak_f
