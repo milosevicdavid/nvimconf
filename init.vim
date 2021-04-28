@@ -34,7 +34,6 @@ Plug 'othree/html5.vim'
 Plug 'unblevable/quick-scope'
 Plug 'jacoborus/tender.vim'
 Plug 'drewtempelmeyer/palenight.vim'
-Plug 'srcery-colors/srcery-vim'
 Plug 'romainl/Apprentice'
 Plug 'makerj/vim-pdf'
 Plug 'flrnd/plastic.vim'
@@ -87,7 +86,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " Theme
 syntax enable
 
-colorscheme srcery
+colorscheme tender
 set background=dark
 let g:airline_theme = 'spaceduck'
 
