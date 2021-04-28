@@ -87,7 +87,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " Theme
 syntax enable
 
-colorscheme tender
+colorscheme srcery
 set background=dark
 let g:airline_theme = 'spaceduck'
 
