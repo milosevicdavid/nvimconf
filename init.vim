@@ -5,22 +5,24 @@ Plug 'vim-airline/vim-airline' " status bar
 Plug 'vim-airline/vim-airline-themes' "status bar theme
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
-Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/syntastic'
 Plug 'mtscout6/syntastic-local-eslint.vim'
+Plug 'leafgarland/typescript-vim'
 Plug 'jiangmiao/auto-pairs'
 " Plug 'storyn26383/vim-vue'
 Plug 'scrooloose/nerdtree'|
             \ Plug 'Xuyuanp/nerdtree-git-plugin' |
             \ Plug 'ryanoasis/vim-devicons'
+Plug 'airblade/vim-gitgutter'
 Plug 'townk/vim-autoclose'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'junegunn/vim-easy-align'
 Plug 'mlaursen/vim-react-snippets'
 Plug 'junegunn/goyo.vim'
 Plug 'matze/vim-move'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'dense-analysis/ale'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'tpope/vim-fugitive'
 Plug 'dkprice/vim-easygrep'
@@ -29,11 +31,11 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
 Plug 'justinmk/vim-sneak'
-Plug  'hail2u/vim-css3-syntax'
 Plug 'othree/html5.vim'
 Plug 'unblevable/quick-scope'
 Plug 'jacoborus/tender.vim'
 Plug 'drewtempelmeyer/palenight.vim'
+Plug 'srcery-colors/srcery-vim'
 Plug 'romainl/Apprentice'
 Plug 'makerj/vim-pdf'
 Plug 'flrnd/plastic.vim'
@@ -49,6 +51,9 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'crusoexia/vim-monokai'
 Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
 Plug 'ajmwagar/vim-deus'
+Plug 'fcpg/vim-fahrenheit'
+Plug 'sjl/badwolf'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
 
@@ -59,8 +64,33 @@ set cursorline
 set autoread
 autocmd FocusGained * checktime
 
+
+
 "copy
 vnoremap <C-c> "+y
+
+
+"fix syntax breaking
+autocmd BufEnter * syntax sync fromstart
+
+"Typescript
+let g:typescript_indent_disable = 1
+let g:coc_global_extensions = ['coc-tsserver']
+
+
+"Ale
+let g:ale_fix_on_save = 1
+let g:ale_javascript_prettier_options = '--trailing-comma none'
+let g:ale_vue_prettier_options = '--trailing-comma all'
+
+
+let g:ale_fixers = {
+\   'javascript': ['prettier'],
+\   'css': ['prettier'],
+\   'vue': ['prettier'],
+\   'html': ['prettier'],
+\}
+
 
 "html5
 let html_no_rendering=1
@@ -86,7 +116,7 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 " Theme
 syntax enable
 
-colorscheme tender
+colorscheme spaceduck
 set background=dark
 let g:airline_theme = 'spaceduck'
 
@@ -169,7 +199,7 @@ set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 " TextEdit might fail if hidden is not set.
 set hidden
 
-" Some servers have issues with backup files, see #649.
+" Some servers have issue with backup files, see #649.
 set nobackup
 set nowritebackup
 
@@ -346,10 +376,6 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
 let g:syntastic_javascript_checkers = ['eslint']
 
-let g:syntastic_error_symbol = '❌'
-let g:syntastic_style_error_symbol = '⁉️'
-let g:syntastic_warning_symbol = '⚠️'
-let g:syntastic_style_warning_symbol = '💩'
 
 highlight link SyntasticErrorSign SignColumn
 highlight link SyntasticWarningSign SignColumn
@@ -475,4 +501,4 @@ highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
 " map f <Plug>Sneak_f
 " map F <Plug>Sneak_F
 " map t <Plug>Sneak_t
-" map T <Plug>Sneak_T
+" map T <Plug>Sneak_Ts
